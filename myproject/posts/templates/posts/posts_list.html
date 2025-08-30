@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Posts
+{% endblock %}
+
+{% block content %}
+    <section>
+    {% if request.user.is_authenticated%}
+    <h1>Welcome {{request.user}} to Blog Posts 📰!</h1>
+    {%else%}
+    <h1>Posts</h1>
+    {% endif %}
+    {%for post in posts %}
+    <article class="post">
+        <h2>
+            <a href="{% url 'posts:page' slug=post.slug%} ">
+            {{post.title}}
+            </a>
+        </h2>
+        <h4 class="post-text">{{post.date}} by {{post.author}}</h4>
+        <p class="post-text">{{post.body}}</p>
+        <br></br>
+        {% if request.user.is_authenticated and request.user == post.author %}
+        <form action="{% url 'posts:delete' slug=post.slug %}" method="post" >
+            {% csrf_token %}
+            <button class="delete-btn">Delete</button>
+        </form>
+        {% endif %}
+    </article>
+    {%endfor%}
+    </section>
+{% endblock %}
